@@ -201,7 +201,7 @@ static char *camera_fixup_getparams(int id, const char *settings)
             }
         }
     }
-
+        
 #if !LOG_NDEBUG
     ALOGV("%s: fixed parameters:", __FUNCTION__);
     params.dump();
@@ -223,6 +223,11 @@ static char *camera_fixup_setparams(int id, const char *settings)
     params.dump();
 #endif
 
+// HACK PT1
+const char* previewSize = "0x0";
+    if(params.get(android::CameraParameters::KEY_PREVIEW_SIZE))
+        previewSize = params.get(android::CameraParameters::KEY_PREVIEW_SIZE);
+        
     const char *shutterSpeed = params.get("shutter-speed");
     if (shutterSpeed) {
         if (strcmp(shutterSpeed, "auto") != 0) {
@@ -282,6 +287,12 @@ static char *camera_fixup_setparams(int id, const char *settings)
         }
     }
 
+   // HACK PT2
+        if(strcmp(previewSize, "1920x1080") == 0) {
+            params.set(android::CameraParameters::KEY_PREVIEW_SIZE, "1920x1080");
+            params.set(android::CameraParameters::KEY_PICTURE_SIZE, "1920x1080");
+        }
+        
 #if !LOG_NDEBUG
     ALOGV("%s: fixed parameters:", __FUNCTION__);
     params.dump();
